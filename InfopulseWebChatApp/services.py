@@ -1,4 +1,24 @@
+from redis.sentinel import Sentinel
+
+from InfopulseWebChat.settings import SENTINEL_CONNECTION
 from InfopulseWebChatApp.models import ChatUser, Ban
+
+class MessageService:
+    sentinel = Sentinel([(SENTINEL_CONNECTION, 17777)], socket_timeout=0.1)
+    database = sentinel.master_for('mymaster', socket_timeout=0.1)
+
+    @staticmethod
+    def get_all_messages_by_login(login):
+        pass
+
+    @staticmethod
+    def save_broadcast_message(sender, message):
+        pass
+
+    @staticmethod
+    def save_private_message(sender, receiver, message):
+        pass
+
 
 
 class ChatUserService:

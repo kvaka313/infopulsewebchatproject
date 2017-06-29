@@ -3,6 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <title>Chat page</title>
+    <script src="http://cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    <script>
+      function load() {
+          document.getElementById("send").addEventListener("click", send);
+          document.getElementById("broadcast").addEventListener("click", broadcast);
+          document.getElementById("logout").addEventListener("click", logout);
+      }
+      document.addEventListener("DOMContentLoaded", load);
+      var sock=new SockJS('{{sock_url}}');
+      sock.onopen=function(){
+          console.log("connection establish");
+          registration();
+      };
+      sock.onclose=function(event){
+          if(event.wasClean){
+              console.log("socket closed");
+          }else{
+              console.log("error");
+          }
+          window.location.href="/";
+      };
+       socket.onerror=function(err){
+           console.log(err);
+       };
+       socket.onmessage=function(event){
+           var message=event.data;
+           var json_message=JSON.parse(message);
+           if(typeof json_message.auth==="yes" ||
+              typeof json_message.list!=="undefined"){
+               var active_users=json_message.list;
+               var ul_tag=document.createElement("ul");
+               for(var i=0; i < active_users.length; i++){
+                   var li_tag=document.createElement("li");
+                   li_tag.id=active_users[i];
+                   li_tag.innerText=active_users[i];
+                   li_tag.addEventListener("click",add_user);
+                   ul_tag.appendChild(li_tag);
+               }
+               document.getElementById("activeusers").appendChild(ul_tag);
+           }
+           if(typeof json_message.auth==="yes" ||
+              typeof json_message.name!=="undefined"){
+              var output=json_message.name+":"+json_message.message;
+              document.getElementById("outputmessage").innerText+=output+"\n";
+           }
+       }
+       function send(){
+           var mess=document.getElementById("inputmessage").value;
+           var array_mess=mess.split(":");
+           var answer={};
+           answer["name"]=array_mess[0];
+           answer["message"]=array_mess[1];
+           sock.send(JSON.stringify(answer));
+           
+       }
+       function broadcast(){
+        var mess=document.getElementById("inputmessage").value;
+        var answer={};
+        answer["broadcast"]=mess;
+        sock.send(JSON.stringify(answer));   
+     
+       }
+       function logout() {
+           var answer={};
+           answer["logout"]="";
+           sock.send(JSON.stringify(answer)); 
+       }
+       function getCookie(name) {
+            var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+            ));
+            return matches ? decodeURIComponent(matches[1]) : undefined;
+       }
+       function registration() {
+          var sessionid=getCookie("sessionid");
+          var answer={};
+          answer["sessionid"]=sessionid;
+          sock.send(JSON.stringify(answer));
+       }
+       function add_user(event){
+           var user_name=event.currentTarget.id;
+           document.getElementById("inputmessage").value=
+                   user_name+":";
+       }
+
+    </script>
 </head>
 <body>
 <table>

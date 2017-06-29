@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import FormView
 
+from InfopulseWebChat.settings import SOCKET_URL
 from InfopulseWebChatApp.forms import RegistrationForm
 from InfopulseWebChatApp.models import ChatUser
 from InfopulseWebChatApp.services import ChatUserService
@@ -74,7 +75,7 @@ class AdminController(View):
 
 class ChatController(View):
     def get(self,request):
-        pass
+        return render(request,"chat.html",{"sock_url":SOCKET_URL})
 
 class BanController(View):
     def get(self,request):

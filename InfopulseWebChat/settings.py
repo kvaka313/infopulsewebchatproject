@@ -125,3 +125,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 SOCKET_URL='http://127.0.0.1:8888/sock'
+SENTINEL_CONNECTION='127.0.0.1'
