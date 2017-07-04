@@ -122,7 +122,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
-
+SESSION_COOKIE_HTTPONLY = False
 STATIC_URL = '/static/'
 SOCKET_URL='http://127.0.0.1:8888/sock'
 SENTINEL_CONNECTION='127.0.0.1'

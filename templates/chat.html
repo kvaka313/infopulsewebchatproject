@@ -24,10 +24,10 @@
           }
           window.location.href="/";
       };
-       socket.onerror=function(err){
+       sock.onerror=function(err){
            console.log(err);
        };
-       socket.onmessage=function(event){
+       sock.onmessage=function(event){
            var message=event.data;
            var json_message=JSON.parse(message);
            if(typeof json_message.auth==="yes" ||
@@ -108,9 +108,9 @@
         </td>
         <td>
             <form>
-                <input type="button" id="send"/>
-                <input type="button" id="broadcast"/>
-                <input type="button" id="logout"/>
+                <input type="button" id="send" value="send"/>
+                <input type="button" id="broadcast" value="broadcast"/>
+                <input type="button" id="logout" value="logout"/>
             </form>
 
         </td>

@@ -31,7 +31,7 @@ class SocketHandler(sockjs.tornado.SockJSConnection):
 
            login=None
            if(session_db!=None):
-               session=session_db.decode()
+               session=session_db.get_decoded()
                login=session.get("login")
 
            if(login!=None):
@@ -40,7 +40,7 @@ class SocketHandler(sockjs.tornado.SockJSConnection):
                messages=MessageService.get_all_messages_by_login(login)
                for message in messages:
                    answer={}
-                   message_array=message.split(":",1)
+                   message_array=message.split(":")
                    answer["auth"]="yes"
                    answer["name"]=message_array[0]
                    answer["message"]=message_array[1]
@@ -100,8 +100,10 @@ class SocketHandler(sockjs.tornado.SockJSConnection):
 
     def send_user_list(self):
         users=SocketHandler.active_clients.keys()
-        answer={}
-        answer["list"]=users
+        answer={"list":[]}
+        for user in users:
+            answer["list"].append(user)
+
         for socket in SocketHandler.active_clients.values():
             socket.send(json.dumps(answer))
 

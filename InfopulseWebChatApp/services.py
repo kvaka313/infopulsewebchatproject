@@ -14,10 +14,10 @@ class MessageService:
       mess=[]
       for message in messages:
           mess.append(message.sender_id.login+":"+message.body)
-
       messages=MessageService.database.lrange("broadcast",0,-1)
       for message in messages:
           mess.append(message)
+      print(len(mess))
       return mess
 
 
