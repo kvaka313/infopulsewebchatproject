@@ -16,7 +16,7 @@ class MessageService:
           mess.append(message.sender_id.login+":"+message.body)
       messages=MessageService.database.lrange("broadcast",0,-1)
       for message in messages:
-          mess.append(message)
+          mess.append(message.decode())
       print(len(mess))
       return mess
 

@@ -71,7 +71,7 @@ class SocketHandler(sockjs.tornado.SockJSConnection):
             login=self.get_login()
             if(login!=None):
                 name=json_message.get("name")
-                sock=SocketHandler.active_clients[name]
+                sock=SocketHandler.active_clients.get(name)
                 if(sock!=None):
                     answer={}
                     answer["name"]=login

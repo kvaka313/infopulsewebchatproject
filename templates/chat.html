@@ -41,6 +41,7 @@
                    li_tag.addEventListener("click",add_user);
                    ul_tag.appendChild(li_tag);
                }
+               document.getElementById("activeusers").innerHTML=""
                document.getElementById("activeusers").appendChild(ul_tag);
            }
            if(typeof json_message.auth==="yes" ||
@@ -68,7 +69,8 @@
        function logout() {
            var answer={};
            answer["logout"]="";
-           sock.send(JSON.stringify(answer)); 
+           sock.send(JSON.stringify(answer));
+           window.location.href="/"
        }
        function getCookie(name) {
             var matches = document.cookie.match(new RegExp(
