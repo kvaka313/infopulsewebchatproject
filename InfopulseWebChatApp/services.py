@@ -1,23 +1,37 @@
 from redis.sentinel import Sentinel
 
 from InfopulseWebChat.settings import SENTINEL_CONNECTION
-from InfopulseWebChatApp.models import ChatUser, Ban
+from InfopulseWebChatApp.models import ChatUser, Ban, Message
+
 
 class MessageService:
     sentinel = Sentinel([(SENTINEL_CONNECTION, 17777)], socket_timeout=0.1)
     database = sentinel.master_for('mymaster', socket_timeout=0.1)
 
     @staticmethod
-    def get_all_messages_by_login(login):
-        pass
+    def get_all_messages_by_login(userlogin):
+      messages=Message.objects.filter(receiver_id__login=userlogin)
+      mess=[]
+      for message in messages:
+          mess.append(message.sender_id.login+":"+message.body)
+
+      messages=MessageService.database.lrange("broadcast",0,-1)
+      for message in messages:
+          mess.append(message)
+      return mess
+
 
     @staticmethod
     def save_broadcast_message(sender, message):
-        pass
+        MessageService.database.lpush("broadcast",sender+":"+message)
 
     @staticmethod
     def save_private_message(sender, receiver, message):
-        pass
+       sender_user = ChatUser.objects.filter(login=sender).first()
+       receiver_user=ChatUser.objects.filter(login=receiver).first()
+       mess=Message(body=message,sender_id=sender_user,receiver_id=receiver_user)
+       mess.save()
+
 
 
 
