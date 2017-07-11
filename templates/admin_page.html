@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+    </script>
+    <script>
+         function getUserList() {
+           $.ajax({
+                type:'GET',
+                contentType:'application/json',
+                url:'{{ usersURL}}',
+                dataType:'json',
+                success:function (data, textStatus, jqXHR) {
+                    var user_array = data.users;
+                    var form_el = document.createElement("form");
+                    var ul_el = document.createElement("ul");
+                    for (var i = 0; i < user_array.length; i++) {
+                        var li_el = document.createElement("li");
+                        li_el.innerText = user_array[i].login;
+                        var button_el = document.createElement("input");
+                        button_el.type = "button";
+                        button_el.id=user_array[i].login;
+                        button_el.name = user_array[i].href;
+                        button_el.value = user_array[i].rel;
+                        li_el.appendChild(button_el);
+                        button_el.addEventListener("click", addUser);
+                        ul_el.appendChild(li_el);
+                    }
+                    form_el.appendChild(ul_el);
+                    document.getElementById("ban_users").innerHTML = "";
+                    document.getElementById("ban_users").appendChild(form_el);
+                }
+
+           })
+        }
+        function addUser(event){
+            var login=event.currentTarget.id;
+            var rel=event.currentTarget.value;
+            var href=event.currentTarget.name;
+
+            if(rel=="add"){
+                $.ajax({
+                     type:'POST',
+                     contentType:'application/json',
+                     url:href,
+                     data:JSON.stringify({'login':login}),
+                     success:function (data, textStatus, jqXHR) {
+                          getUserList();
+                     }
+
+                })
+            }else{
+                $.ajax({
+                   type:'DELETE',
+                   contentType:'application/json',
+                   url:href,
+                   success:function (data, textStatus, jqXHR) {
+                       getUserList();
+                   }
+                });
+            }
+
+        }
+
+    getUserList()
+    </script>
+</head>
+<body>
+
+<div id="ban_users"></div>
+
+</body>
+</html>

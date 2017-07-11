@@ -71,11 +71,12 @@ class IndexController(View):
 
 class AdminController(View):
     def get(self,request):
-        pass
+        return render(request,"admin_page.html",{"usersURL":reverse("get_users")})
+
 
 class ChatController(View):
     def get(self,request):
-        return render(request,"chat.html",{"sock_url":SOCKET_URL})
+        return render(request,"chat.html",{"sock_url":reverse("get_users")})
 
 class BanController(View):
     def get(self,request):
