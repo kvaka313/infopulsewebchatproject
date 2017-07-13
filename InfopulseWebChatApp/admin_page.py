@@ -15,6 +15,7 @@ def get_all_users(request):
     if (request.session.get('login') != None and request.session.get('is_admin') == True):
         all_users = ChatUser.objects.filter(role_id_id=1)
         json_users = {"users": []}
+        print(all_users)
         for user in all_users:
             temp = {}
             b = Ban.objects.filter(sender_id=user).first()
@@ -26,10 +27,9 @@ def get_all_users(request):
             else:
                 temp["login"]=user.login
                 temp["rel"]="remove"
-                print(b.id)
-                temp["href"]=reverse("del_user",b.id)
+                temp["href"]=reverse("del_user",args=[b.id])
                 json_users["users"].append(temp)
-            return HttpResponse(json.dumps(json_users), content_type='application/json', status=status.HTTP_200_OK)
+        return HttpResponse(json.dumps(json_users), content_type='application/json', status=status.HTTP_200_OK)
     else:
         return HttpResponse("error login", status=400)
 
